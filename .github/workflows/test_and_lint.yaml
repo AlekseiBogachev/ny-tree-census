@@ -1,0 +1,107 @@
+name: Tests and Linters
+on: 
+  workflow_dispatch:
+  push:
+    branches-ignore:
+      - docs
+  pull_request:
+    branches:
+      - main
+env:
+  POETRY_INSTALLER_MAX_WORKERS: 10
+
+jobs:
+  check_environment:
+    runs-on: [self-hosted,ubuntu,ds,no-gpu]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+
+      - name: Install dependencies
+        run: poetry install --no-root
+
+      - name: Check Python version
+        run: python --version
+            
+      - name: Check Poetry version
+        run: poetry --version
+
+      - name: Poetry check configs
+        run: poetry config --list
+
+      - name: Check DVC version
+        run: |
+          echo DVC version: 
+          poetry run dvc --version
+
+  autoformatter:
+    runs-on: [self-hosted,ubuntu,ds,no-gpu]
+    needs: check_environment
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: sort imports and fix spaces
+        run: poetry run ruff check --fix
+
+      - name: Git Auto Commit
+        uses: stefanzweifel/git-auto-commit-action@v5.0.0
+        with:
+          commit_message: Automated Change - sort imports
+
+      - name: autoformat
+        run: poetry run ruff format
+
+      - name: Git Auto Commit
+        uses: stefanzweifel/git-auto-commit-action@v5.0.0
+        with:
+          commit_message: Automated Change - autoformat all code
+            
+  test:
+    runs-on: [self-hosted,ubuntu,ds,no-gpu]
+    needs: [check_environment, autoformatter]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Print number of tests
+        run: echo There are no tests!
+
+  ruff_check:
+    runs-on: [self-hosted,ubuntu,ds,no-gpu]
+    needs: [check_environment, autoformatter]
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Check Python modules and Jupyter Notebooks
+        run: poetry run ruff check
+
+  mypy:
+    runs-on: [self-hosted,ubuntu,ds,no-gpu]
+    needs: [check_environment, autoformatter]
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Check Python modules
+        run: poetry run mypy ./src/
+
+      - name: Check Jupyter Notebooks
+        run: poetry run nbqa mypy ./notebooks/
