@@ -65,3 +65,14 @@ combine-as-imports = true
 disallow_untyped_defs = true
 warn_return_any = true
 warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = [
+    "catboost",
+    "joblib",
+    "missingno",
+    "sklearn",
+    "sklearn.metrics",
+    "sklearn.model_selection"
+]
+ignore_missing_imports = true
