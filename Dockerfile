@@ -21,6 +21,8 @@ RUN useradd \
     --uid ${UID} \
     ${UNAME}
 
+RUN curl -fsSL https://code-server.dev/install.sh | sh
+
 USER ${UNAME}
 
 RUN git config --global user.name "${GITUSER}"
