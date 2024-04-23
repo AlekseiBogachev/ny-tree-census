@@ -8,7 +8,9 @@ docker run \
 --rm \
 -p 127.0.0.1:8080:8080 \
 ny_tree_census_dev \
-code-server --bind-addr 0.0.0.0:8080 /dockeruser/ny_tree_census
+code-server \
+--bind-addr 0.0.0.0:8080 /dockeruser/ny_tree_census \
+--user-data-dir /dockeruser/ny_tree_census/.code-server
 
 sleep 1
 

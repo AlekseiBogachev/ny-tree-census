@@ -4,12 +4,10 @@ davidanson.vscode-markdownlint
 donjayamanne.git-extension-pack
 donjayamanne.githistory
 eamodio.gitlens
-henriiik.docker-linter
 ms-python.black-formatter
 ms-python.debugpy
 ms-python.flake8
 ms-python.python
-ms-python.vscode-pylance
 ms-toolsai.jupyter
 ms-toolsai.jupyter-keymap
 ms-toolsai.jupyter-renderers
