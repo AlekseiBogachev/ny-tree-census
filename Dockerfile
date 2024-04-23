@@ -25,6 +25,9 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh
 
 USER ${UNAME}
 
+RUN EXT_LIST="/dockeruser/ny_tree_census/.vscode/vscode_extensions.txt" && \
+for EXT in $EXT_LIST; do code-server --install-extension $EXT; done
+
 RUN git config --global user.name "${GITUSER}"
 RUN git config --global user.email "${GITEMAIL}"
 
