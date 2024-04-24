@@ -29,6 +29,8 @@ COPY .code-server/ /${UNAME}/ny_tree_census/.code-server
 RUN for EXT in $(cat /${UNAME}/ny_tree_census/.code-server/extensions.txt); \
 do code-server --install-extension $EXT; \
 done
+COPY .code-server/machine_settings.json /${UNAME}/.local/share/code-server/Machine/settings.json
+COPY .code-server/user_settings.json /${UNAME}/.local/share/code-server/User/settings.json
 
 RUN git config --global user.name "${GITUSER}"
 RUN git config --global user.email "${GITEMAIL}"
