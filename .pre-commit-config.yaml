@@ -33,7 +33,7 @@ repos:
     files: ^notebooks/
     require_serial: true
     types: [jupyter]
-    additional_dependencies: [mypy, pandas-stubs, types-seaborn]
+    additional_dependencies: [mypy, pandas-stubs, types-seaborn, types-requests]
 
 - repo: meta
   hooks:
