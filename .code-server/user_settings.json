@@ -1,0 +1,9 @@
+{
+    "workbench.colorTheme": "Default Light Modern",
+    "redhat.telemetry.enabled": false,
+    "editor.fontSize": 20,
+    "editor.rulers": [80, 120],
+    "autoDocstring.docstringFormat": "numpy",
+    "telemetry.telemetryLevel": "off",
+    "cSpell.language": "en,ru,en-GB"
+}
