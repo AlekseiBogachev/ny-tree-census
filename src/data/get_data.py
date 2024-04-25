@@ -78,7 +78,55 @@ def get_description(output_path: str, chunk_size: int) -> None:
     return None
 
 
+@click.command()
+@click.option(
+    "-o",
+    "--output-path",
+    "output_path",
+    default=Path.joinpath(project_dir, "data", "raw"),
+    help="Каталог, в который будет сохранён файл с исходными данным "
+    "в формате csv. "
+    "Значение по умолчанию <project_dir>/data/raw/",
+    show_default=True,
+    type=click.Path(exists=True),
+)
+@click.option(
+    "-cs",
+    "--chunk-size",
+    "chunk_size",
+    default=1000,
+    help="Количество строк, загружаемых за 1 запрос. API поставщика данных"
+    "ограничивает количество строк 1000.",
+    show_default=True,
+    type=int,
+)
+def get_data(output_path: str, chunk_size: int = 1000) -> None:
+    """Загружает датасет в формате .csv через SODA API.
+
+    Загружает данные в формате csv с помощью SODA API
+    (см. https://dev.socrata.com/foundry/data.cityofnewyork.us/uvpi-gqnh)
+    и сохраняет их в каталог output_path в файл data.csv. Если файл с таким
+    именем существует, то он перезаписывается.
+
+    Поставщик данных ограничивает 1000 количество строк, загружаемых за
+    1 запрос.\f
+
+    Parameters
+    ----------
+    output_path : str
+        Каталог, в которой будет сохранён файл с исходными данными data.csv .
+        Значение по умолчанию <project dir>/data/raw/ .
+    chunk_size : int, optional
+        Количество строк загружаемых за 1 запрос. API поставщика данных "
+        "ограничивает количество строк 1000." Значение по умолчанию 1000.
+    """
+    print("Загрузка исходных данных")
+
+    return None
+
+
 cli.add_command(get_description)
+cli.add_command(get_data)
 
 
 if __name__ == "__main__":
