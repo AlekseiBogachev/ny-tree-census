@@ -85,7 +85,7 @@ target/
 .ipynb_checkpoints/
 
 # exclude data from source control by default
-# /data/
+/data/
 
 # Mac OS-specific storage files
 .DS_Store
@@ -105,3 +105,6 @@ target/
 
 # Self-hosted runner for GitHub Actions
 /gh_actions_runner/.secret_token
+
+# Загружаемое описание датасета
+/references/ny_tree_census_description.pdf

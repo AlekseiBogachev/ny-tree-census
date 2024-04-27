@@ -28,6 +28,7 @@ types-seaborn = "^0.13.2.20240311"
 ruff = "^0.3.5"
 nbqa = "^1.8.5"
 pre-commit = "^3.7.0"
+types-requests = "^2.31.0.20240406"
 
 [build-system]
 requires = ["poetry-core"]
