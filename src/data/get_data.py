@@ -2,10 +2,12 @@
 """Загрузка исходного датасета и его описания."""
 
 import logging
+import os
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 import click
+import pandas as pd
 import requests
 
 from src import setup_logging_to_file
@@ -80,8 +82,8 @@ def get_description(output_path: str, chunk_size: int) -> None:
 
 
 def request_soda_json(
-    endpoint: str, params: Dict[str, str], timeout: int = 10
-) -> Optional[List[Dict[str, Any]]]:
+    endpoint: str, params: Dict[str, Any], timeout: int = 10
+) -> List[Dict[str, Any]]:
     """Выполняет запрос к SODA API.
 
     Выполняет запрос к SODA API с конечной точкой endpoint и параметрами params,
@@ -95,18 +97,18 @@ def request_soda_json(
     timeout: int, optional
         Время ожидания ответа от сервера в секундах, после которого будет
         вызвана ошибка. Значение по умолчанию 10.
-    params : Dict[str, str]
+    params : Dict[str, Any]
         Параметры запроса.
 
     Returns
     -------
-    Optional[List[Dict[str, Any]]]
+    List[Dict[str, Any]]
         Ответ SODA API. Если ответ не был получен или запрос завершился ошибкой,
         то возвращается None. Если ответ был получен и успешно обработан, то
         возвращается обработанный json - список из словарей параметров и
         значений.
     """
-    resp_json: Optional[List[Dict[str, Any]]] = None
+    resp_json: List[Dict[str, Any]] = list()
     try:
         response: requests.Response = requests.get(
             endpoint,
@@ -135,7 +137,7 @@ def request_soda_json(
         logger.error("JSONDecodeError!", exc_info=True)
     else:
         logger.info(
-            "Запрос успешно вернул ответ."
+            "Запрос успешно вернул ответ. "
             f"Длина ответа {len(response.content)} Байт."
         )
 
@@ -148,7 +150,7 @@ def request_soda_json(
     "--output-path",
     "output_path",
     default=Path.joinpath(project_dir, "data", "raw"),
-    help="Каталог, в который будет сохранён файл с исходными данным "
+    help="Каталог, в который будет сохранён файл с исходными данными "
     "в формате csv. "
     "Значение по умолчанию <project_dir>/data/raw/",
     show_default=True,
@@ -166,7 +168,7 @@ def request_soda_json(
 )
 @click.option(
     "-m",
-    "--maxrows",
+    "--max-rows",
     "maxrows",
     default=-1,
     help="Общее количество загруженных строк. Если -1,"
@@ -179,7 +181,7 @@ def request_soda_json(
     "--timeout",
     "timeout",
     default=10,
-    help="Время ожидания ответа от сервера в секундах, после которого будет"
+    help="Время ожидания ответа от сервера в секундах, после которого будет "
     "вызвана ошибка.",
 )
 def get_data(
@@ -190,13 +192,13 @@ def get_data(
 ) -> int:
     """Загружает датасет в формате .csv через SODA API.
 
-    Загружает данные в формате csv с помощью SODA API
+    Загружает данные в формате .csv с помощью SODA API
     (см. https://dev.socrata.com/foundry/data.cityofnewyork.us/uvpi-gqnh)
     и сохраняет их в каталог output_path в файл data.csv. Если файл с таким
     именем существует, то он перезаписывается.
 
-    Поставщик данных ограничивает 1000 количество строк, загружаемых за
-    1 запрос.\f
+    Поставщик данных ограничивает количество строк, загружаемых за 1 запрос,
+    до 1000.\f
 
     Parameters
     ----------
@@ -206,7 +208,7 @@ def get_data(
     chunk_size : int, optional
         Количество строк загружаемых за 1 запрос. API поставщика данных
         ограничивает количество строк 1000." Значение по умолчанию 1000.
-    nrows : int, optional
+    maxrows : int, optional
         Общее количество загруженных строк. Если -1, то загружает весь датасет.
         Значение по умолчанию -1.
     timeout: int, optional
@@ -221,13 +223,63 @@ def get_data(
     endpoint: str = "https://data.cityofnewyork.us/resource/uvpi-gqnh.json"
 
     logger.info("Загрузка датасета через SODA API.")
-    payload: Dict[str, str] = {"$select": "count(*)"}
+    query_params: Dict[str, Any] = {"$select": "count(*)"}
 
-    print(request_soda_json(endpoint, params=payload))
+    dataset_len: int = int(
+        request_soda_json(endpoint, params=query_params, timeout=timeout)[0][
+            "count"
+        ]
+    )
+    logger.info(f"Количество наблюдений в исходном датасете: {dataset_len}")
 
-    nrows_resp: int = 0
+    file_name: Path = Path(output_path).joinpath("data.csv")
+    logger.info(f"Данные будут сохранены в файл {file_name}")
 
-    return nrows_resp
+    if file_name.exists():
+        logger.info(f"Файл {file_name} существует.")
+        os.remove(file_name)
+        logger.info(f"Файл {file_name} удалён.")
+
+    logger.info(f"Создаём файл {file_name}.")
+
+    n_data_rows: int = 0
+
+    query_params = {
+        "$limit": chunk_size,
+        "$offset": 0,
+        "$order": "tree_id",
+    }
+
+    if maxrows < 0:
+        maxrows = dataset_len
+    logger.info(f"Будет загружено строк: {maxrows}.")
+
+    while True:
+        logger.info(
+            f"Загрузка строк с {query_params['$offset']} "
+            f"по {query_params['$offset'] + query_params['$limit']}."
+        )
+
+        new_data: pd.DataFrame = pd.DataFrame(
+            request_soda_json(endpoint, params=query_params, timeout=timeout)
+        )
+        new_data.to_csv(
+            file_name, header=not (file_name.exists()), index=False, mode="a"
+        )
+
+        logger.info(f"Строки записаны в файл {file_name}")
+
+        n_data_rows = query_params["$offset"] + len(new_data)
+        logger.info(f"Получено строк {n_data_rows} / {maxrows}.")
+
+        if query_params["$offset"] + query_params["$limit"] < maxrows:
+            query_params["$offset"] += query_params["$limit"]
+        else:
+            break
+
+    logger.info(f"Датасет загружен. Получено строк: {n_data_rows}")
+
+    return n_data_rows
 
 
 cli.add_command(get_description)
