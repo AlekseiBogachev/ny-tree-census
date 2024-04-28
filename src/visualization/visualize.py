@@ -46,11 +46,11 @@ def review_data(df: pd.DataFrame, n_rows: int = 10) -> None:
         print("Доля пропусков в каждом признаке:")
         display((df.isna().sum() / len(df)).round(2))
 
-        msno.matrix(df, figsize=(10, 5))
+        msno.matrix(df, figsize=(15, 5))
         plt.title("Распределение пропусков по таблице", fontsize=20)
         plt.show()
 
-        msno.bar(df, figsize=(10, 5))
+        msno.bar(df, figsize=(15, 5))
         plt.title("Количество непустых значений в каждом столбце", fontsize=20)
         plt.show()
 
