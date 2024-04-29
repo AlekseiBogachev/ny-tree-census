@@ -47,7 +47,7 @@
 | 39 | longitude | Долгота | Число |
 | 40 | x_sp | X coordinate, in state plane. Units are feet. | Число |
 | 41 | y_sp | Y coordinate, in state plane. Units are feet. | Число |
-| 42 | council district |  | Число |
-| 43 | census tract |  | Число |
+| 42 | council_district | Муниципальный округ. | Число |
+| 43 | census_tract | Переписной участок | Число |
 | 44 | bin |  | Число |
 | 45 | bbl |  | Число |
