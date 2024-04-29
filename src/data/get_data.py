@@ -3,6 +3,7 @@
 
 import logging
 import os
+import typing
 from io import StringIO
 from pathlib import Path
 from typing import Any, Dict
@@ -237,10 +238,11 @@ def get_data(
     logger.info("Загрузка датасета через SODA API.")
     query_params: Dict[str, Any] = {"$select": "count(*)"}
 
-    dataset_len: int = int(
+    dataset_len = typing.cast(
+        int,
         request_soda_json(endpoint, params=query_params, timeout=timeout).loc[
             0, "count"
-        ]
+        ],
     )
     logger.info(f"Количество наблюдений в исходном датасете: {dataset_len}")
 
