@@ -4,6 +4,5 @@
     "editor.fontSize": 20,
     "editor.rulers": [80, 120],
     "autoDocstring.docstringFormat": "numpy",
-    "cSpell.language": "en,ru,en-GB",
-    "python.venvPath": "~/.cache/pypoetry/virtualenvs"
+    "cSpell.language": "en,ru,en-GB"
 }

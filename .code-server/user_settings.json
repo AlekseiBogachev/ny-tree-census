@@ -5,6 +5,5 @@
     "editor.rulers": [80, 120],
     "autoDocstring.docstringFormat": "numpy",
     "telemetry.telemetryLevel": "off",
-    "cSpell.language": "en,ru,en-GB",
-    "python.venvPath": "~/.cache/pypoetry/virtualenvs"
+    "cSpell.language": "en,ru,en-GB"
 }
