@@ -1074,9 +1074,9 @@ nbclassic==1.0.0 ; python_version >= "3.11" and python_version < "4.0" \
 nbclient==0.10.0 ; python_version >= "3.11" and python_version < "4.0" \
     --hash=sha256:4b3f1b7dba531e498449c4db4f53da339c91d449dc11e9af3a43b4eb5c5abb09 \
     --hash=sha256:f13e3529332a1f1f81d82a53210322476a168bb7090a0289c795fe9cc11c9d3f
-nbconvert==7.16.3 ; python_version >= "3.11" and python_version < "4.0" \
-    --hash=sha256:a6733b78ce3d47c3f85e504998495b07e6ea9cf9bf6ec1c98dda63ec6ad19142 \
-    --hash=sha256:ddeff14beeeedf3dd0bc506623e41e4507e551736de59df69a91f86700292b3b
+nbconvert==7.16.4 ; python_version >= "3.11" and python_version < "4.0" \
+    --hash=sha256:05873c620fe520b6322bf8a5ad562692343fe3452abda5765c7a34b7d1aa3eb3 \
+    --hash=sha256:86ca91ba266b0a448dc96fa6c5b9d98affabde2867b363258703536807f9f7f4
 nbformat==5.10.4 ; python_version >= "3.11" and python_version < "4.0" \
     --hash=sha256:322168b14f937a5d11362988ecac2a4952d3d8e3a2cbeb2319584631226d5b3a \
     --hash=sha256:3b48d6c8fbca4b299bf3982ea7db1af21580e4fec269ad087b9e81588891200b
