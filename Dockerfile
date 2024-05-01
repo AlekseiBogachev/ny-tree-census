@@ -21,7 +21,7 @@ RUN useradd \
     --uid ${UID} \
     ${UNAME}
 
-RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version=4.22.1
+RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version=4.23.1
 
 USER ${UNAME}
 
