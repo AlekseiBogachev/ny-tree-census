@@ -3,8 +3,10 @@
 
 import logging
 import os
+import typing
+from io import StringIO
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 import click
 import pandas as pd
@@ -83,17 +85,24 @@ def get_description(output_path: str, chunk_size: int) -> None:
 
 def request_soda_json(
     endpoint: str, params: Dict[str, Any], timeout: int = 10
-) -> List[Dict[str, Any]]:
-    """Выполняет запрос к SODA API.
+) -> pd.DataFrame:
+    """Выполняет запрос к SODA API и возвращает pd.DataFrame с данными.
 
     Выполняет запрос к SODA API с конечной точкой endpoint и параметрами params,
-    и получает в ответ json.
+    получает ответ и обрабатывает его как csv (с помощью pd.read_csv()).
+    Возвращает pd.DataFrame с полученными данными.
     См. https://dev.socrata.com/foundry/data.cityofnewyork.us/uvpi-gqnh .
+
+    В случае, если запрос к SODA API завершился с ошибками
+    requests.exceptions.Timeout или requests.exceptions.HTTPError, то эти ошибки
+    перехватываются, и иформация о них записывается в каталог
+    <project_dir>/logs.
 
     Parameters
     ----------
     endpoint : str
         Конечная тока - адрес, по которому будет оправлен запрос.
+        Для корректной работы должна возвращать csv.
     timeout: int, optional
         Время ожидания ответа от сервера в секундах, после которого будет
         вызвана ошибка. Значение по умолчанию 10.
@@ -102,13 +111,13 @@ def request_soda_json(
 
     Returns
     -------
-    List[Dict[str, Any]]
-        Ответ SODA API. Если ответ не был получен или запрос завершился ошибкой,
-        то возвращается None. Если ответ был получен и успешно обработан, то
-        возвращается обработанный json - список из словарей параметров и
-        значений.
+    pd.DataFrame
+        DataFrame с ответом SODA API. Если ответ не был получен или запрос
+        завершился ошибкой, то возвращает пустой DataFrame. Если ответ был
+        получен и успешно обработан, то возвращается DataFrame с полученными
+        данными.
     """
-    resp_json: List[Dict[str, Any]] = list()
+    resp_json: pd.DataFrame = pd.DataFrame()
     try:
         response: requests.Response = requests.get(
             endpoint,
@@ -125,7 +134,7 @@ def request_soda_json(
             f"encoding: {response.encoding} ; "
         )
 
-        resp_json = response.json()
+        resp_json = pd.read_csv(StringIO(response.text))
 
     except requests.exceptions.Timeout:
         logger.error("Timeout!", exc_info=True)
@@ -133,8 +142,6 @@ def request_soda_json(
     except requests.exceptions.HTTPError:
         logger.error("HTTPError!", exc_info=True)
 
-    except requests.exceptions.JSONDecodeError:
-        logger.error("JSONDecodeError!", exc_info=True)
     else:
         logger.info(
             "Запрос успешно вернул ответ. "
@@ -197,6 +204,11 @@ def get_data(
     и сохраняет их в каталог output_path в файл data.csv. Если файл с таким
     именем существует, то он перезаписывается.
 
+    В случае, если запрос к SODA API завершился с ошибками
+    requests.exceptions.Timeout или requests.exceptions.HTTPError, то эти
+    ошибки перехватываются, и иформация о них записывается в каталог
+    <project_dir>/logs.
+
     Поставщик данных ограничивает количество строк, загружаемых за 1 запрос,
     до 1000.\f
 
@@ -210,7 +222,8 @@ def get_data(
         ограничивает количество строк 1000." Значение по умолчанию 1000.
     maxrows : int, optional
         Общее количество загруженных строк. Если -1, то загружает весь датасет.
-        Значение по умолчанию -1.
+        Если значение maxrows больше -1, но меньше chunk_size, то будет
+        загружено chunk_size строк. Значение по умолчанию -1.
     timeout: int, optional
         Время ожидания ответа от сервера в секундах, после которого будет
         вызвана ошибка. Значение по умолчанию 10.
@@ -220,15 +233,16 @@ def get_data(
     int
         Количество полученных строк.
     """
-    endpoint: str = "https://data.cityofnewyork.us/resource/uvpi-gqnh.json"
+    endpoint: str = "https://data.cityofnewyork.us/resource/uvpi-gqnh.csv"
 
     logger.info("Загрузка датасета через SODA API.")
     query_params: Dict[str, Any] = {"$select": "count(*)"}
 
-    dataset_len: int = int(
-        request_soda_json(endpoint, params=query_params, timeout=timeout)[0][
-            "count"
-        ]
+    dataset_len = typing.cast(
+        int,
+        request_soda_json(endpoint, params=query_params, timeout=timeout).loc[
+            0, "count"
+        ],
     )
     logger.info(f"Количество наблюдений в исходном датасете: {dataset_len}")
 
@@ -260,11 +274,15 @@ def get_data(
             f"по {query_params['$offset'] + query_params['$limit']}."
         )
 
-        new_data: pd.DataFrame = pd.DataFrame(
-            request_soda_json(endpoint, params=query_params, timeout=timeout)
+        new_data: pd.DataFrame = request_soda_json(
+            endpoint, params=query_params, timeout=timeout
         )
+
         new_data.to_csv(
-            file_name, header=not (file_name.exists()), index=False, mode="a"
+            file_name,
+            header=not (file_name.exists()),
+            index=False,
+            mode="a",
         )
 
         logger.info(f"Строки записаны в файл {file_name}")
