@@ -141,11 +141,12 @@ def plot_hbar(data: pd.DataFrame, column_name: str, **kwargs: Any) -> None:
 
 
 def explore_cat_feature(
-    data: pd.DataFrame, column_name: str, **kwargs: Any
+    data: pd.DataFrame, column_name: str, n_top: int = -1, **kwargs: Any
 ) -> None:
     """Выводит информацию о количестве уникальных занчений признака.
 
-    Функция поочередно вызывает функции count_vals() и plot_hbar() и передаёт
+    Функция сначала печатает количество уникальных значений признака, затем,
+    поочередно вызывает функции count_vals() и plot_hbar() и передаёт
     им соответствующие аргумерны. Сначала, выводится таблица с количеством
     повторений каждого уникального значения признака column_name датафрейма data
     (вызов count_vals()). Затем, строится горизонтальная столбчатая диаграмма
@@ -160,12 +161,27 @@ def explore_cat_feature(
         Датафрейм, содержащий исследуемый признак.
     column_name : str
         Имя признака (столбца датафрейма data).
+    n_top : int
+        n наиболее часто встречающихся значений, которые надо вывести. Если
+        меньше 1, то выводит все. Значение по умолчанию -1.
     **kwargs : Any, optional
         Параметры графика, корректные для метода pd.DataFrame.plot.
     """
-    count_vals(data, column_name)
+    print(f"Количество уникальных знаний: {data[column_name].nunique()}")
+
+    most_common: List = data.loc[:, column_name].unique().tolist()
+    if n_top > 0:
+        most_common = (
+            data.loc[:, column_name].value_counts().head(n_top).index.to_list()
+        )
+
+    selected_data: pd.DataFrame = data.loc[
+        data[column_name].isin(most_common), :
+    ]
+
+    count_vals(selected_data, column_name)
     print()
-    plot_hbar(data, column_name, **kwargs)
+    plot_hbar(selected_data, column_name, **kwargs)
 
     return None
 
