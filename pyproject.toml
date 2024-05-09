@@ -21,6 +21,8 @@ kaggle = "^1.6.6"
 missingno = "^0.5.2"
 geopandas = "^0.14.4"
 plotly = "^5.22.0"
+dash = "^2.17.0"
+ipywidgets = "^8.1.2"
 
 
 [tool.poetry.group.dev.dependencies]
