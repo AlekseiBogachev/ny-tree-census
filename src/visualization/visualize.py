@@ -377,6 +377,13 @@ def explore_cat_vs_cat(
     **kwargs :  Any, optional
         Параметры графика, корректные для функции cat_vs_cat_scatter().
         Позволяет переопределить аналогичные параметры, заданные по умолчанию.
+        Если в **kwargs передать аргумент cmap, то тепловая карта будет
+        применена как к цвету текста сводной таблицы, так и к графику после
+        неё.
+        Если в **kwargs передать аргумент norm, то соответствующая нормализация
+        цветов будет применена как к цвету текста сводной таблицы, так и к
+        графику после неё. См. matplotlib.colors.LogNorm . Таким образом, текст
+        сводной таблицы будет иметь те же цвета, что и элементы графика.
     """
     plot_params: Dict[str, Any] = {
         "title": title,
@@ -386,9 +393,17 @@ def explore_cat_vs_cat(
 
     print(plot_params["title"])
 
+    crosstab: pd.DataFrame = pd.crosstab(data[x], data[y])
+
+    gmap: Union[None, np.ndarray] = None
+    if plot_params.get("norm") is not None:
+        gmap = plot_params["norm"](crosstab)
+
     display(
-        pd.crosstab(data[x], data[y]).style.text_gradient(
-            cmap=plot_params["cmap"], axis=None
+        crosstab.style.text_gradient(
+            cmap=plot_params["cmap"],
+            axis=None,
+            gmap=gmap,
         )
     )
 
