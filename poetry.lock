@@ -3561,6 +3561,17 @@ packaging = "*"
 tenacity = ">=6.2.0"
 
 [[package]]
+name = "plotly-geo"
+version = "1.0.0"
+description = "geo shape files for use with plotly.py"
+optional = false
+python-versions = "*"
+files = [
+    {file = "plotly-geo-1.0.0.tar.gz", hash = "sha256:422359c859fc1bccfd5baaffd82d23f4ea06686c1822e72f76270c9d7f82d70e"},
+    {file = "plotly_geo-1.0.0-py3-none-any.whl", hash = "sha256:9f695ca0a48494c821d8ab612d33b092bc64ec8de86d021c5209cc0b217aa9ce"},
+]
+
+[[package]]
 name = "pre-commit"
 version = "3.7.0"
 description = "A framework for managing and maintaining multi-language pre-commit hooks."
@@ -5537,4 +5548,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "5355694f99cdc11a630d1a8a1bbb274a9daa1171db218da78c8017c549cc5178"
+content-hash = "2b45af51a1b56fa0396f1908ad3c98796d22afcebded0892e480eca156617e42"
