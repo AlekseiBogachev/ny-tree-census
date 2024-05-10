@@ -825,6 +825,13 @@ jupyterlab-widgets==3.0.10 ; python_version >= "3.11" and python_version < "4.0"
     --hash=sha256:dd61f3ae7a5a7f80299e14585ce6cf3d6925a96c9103c978eda293197730cb64
 kaggle==1.6.12 ; python_version >= "3.11" and python_version < "4.0" \
     --hash=sha256:f12a05b82d2afb10a74adc69a5f8a736c64bd9934d0b5acfb4fe4f97357530b4
+kaleido==0.2.1 ; python_version >= "3.11" and python_version < "4.0" \
+    --hash=sha256:4670985f28913c2d063c5734d125ecc28e40810141bdb0a46f15b76c1d45f23c \
+    --hash=sha256:845819844c8082c9469d9c17e42621fbf85c2b237ef8a86ec8a8527f98b6512a \
+    --hash=sha256:aa21cf1bf1c78f8fa50a9f7d45e1003c387bd3d6fe0a767cfbbf344b95bdc3a8 \
+    --hash=sha256:bb9a5d1f710357d5d432ee240ef6658a6d124c3e610935817b4b42da9c787c05 \
+    --hash=sha256:ca6f73e7ff00aaebf2843f73f1d3bacde1930ef5041093fe76b83a15785049a7 \
+    --hash=sha256:ecc72635860be616c6b7161807a65c0dbd9b90c6437ac96965831e2e24066552
 kiwisolver==1.4.5 ; python_version >= "3.11" and python_version < "4.0" \
     --hash=sha256:00bd361b903dc4bbf4eb165f24d1acbee754fce22ded24c3d56eec268658a5cf \
     --hash=sha256:040c1aebeda72197ef477a906782b5ab0d387642e93bda547336b8957c61022e \
