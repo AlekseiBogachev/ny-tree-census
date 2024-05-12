@@ -14,3 +14,7 @@ poetry run jupyter notebook \
 --ip 0.0.0.0 \
 --port 8080 \
 --no-browser
+
+sleep 3
+
+echo $(docker logs jupyter_notebook)
