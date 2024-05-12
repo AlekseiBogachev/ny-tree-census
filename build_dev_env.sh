@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "" | tee -a ./logs/docker_build.log
-echo "Сборка базового образа и образа среды разработки" | tee ./logs/docker_build.log
+echo "Сборка базового образа и образа среды разработки" | tee -a ./logs/docker_build.log
 echo "" | tee -a ./logs/docker_build.log
 
 BUILDKIT_PROGRESS=plain \

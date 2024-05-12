@@ -67,3 +67,24 @@ git remote set-url origin https://$(cat /run/secrets/pat)@github.com/${REPO}
 RUN poetry run pre-commit install --install-hooks --overwrite
 
 CMD /bin/bash
+
+
+FROM ny_tree_census_base as gh_actions_runner
+
+USER root
+
+RUN apt-get update -y && apt install curl libdigest-sha-perl libssl3 -y
+
+RUN curl -o actions-runner-linux-x64-2.316.1.tar.gz -L https://github.com/actions/runner/releases/download/v2.316.1/actions-runner-linux-x64-2.316.1.tar.gz
+RUN echo "d62de2400eeeacd195db91e2ff011bfb646cd5d85545e81d8f78c436183e09a8  actions-runner-linux-x64-2.316.1.tar.gz" | shasum -a 256 -c
+RUN tar xzf ./actions-runner-linux-x64-2.316.1.tar.gz
+RUN ./bin/installdependencies.sh
+
+ARG UNAME=dockeruser
+RUN chown -R $UNAME /$UNAME
+USER $UNAME
+
+COPY poetry.loc[k] pyproject.toml ./
+RUN poetry install --no-root
+
+CMD /bin/bash
