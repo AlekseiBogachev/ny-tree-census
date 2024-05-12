@@ -1,0 +1,39 @@
+services:
+  code-server:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: ny_tree_census_dev
+      secrets:
+        - source: dev_env_pat
+          target: pat
+    ports:
+      - "8080:8080"
+    command: /bin/bash -c "\
+      code-server \
+      --disable-telemetry \
+      --disable-update-check \
+      --disable-workspace-trust \
+      --disable-getting-started-override \
+      --bind-addr 0.0.0.0:8080 \
+      /dockeruser/ny_tree_census"
+  self-hosted_runner:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: gh_actions_runner
+    secrets:
+      - runner_secret_token
+    command: /bin/bash -c "\
+      ./config.sh \
+      --unattended \
+      --labels ubuntu,ds,no-gpu \
+      --url https://github.com/AlekseiBogachev/ny-tree-census \
+      --token $(cat /run/secrets/runner_secret_token) && \
+      ./run.sh"
+
+secrets:
+  dev_env_pat:
+    file: ./.dev_env_pat
+  runner_secret_token:
+    file: ./.runner_secret_token
