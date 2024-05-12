@@ -6,7 +6,7 @@ echo ""
 
 docker run \
 --detach \
---name jupyter_notebook \
+--name ny_tree_census_jupyter_notebook \
 --rm \
 -p 127.0.0.1:8080:8080 \
 ny_tree_census_dev \
