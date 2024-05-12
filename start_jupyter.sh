@@ -17,4 +17,4 @@ poetry run jupyter notebook \
 
 sleep 3
 
-echo $(docker logs jupyter_notebook)
+echo $(docker logs ny_tree_census_jupyter_notebook)
