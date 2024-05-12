@@ -1,4 +1,5 @@
 services:
+
   code-server:
     build:
       context: ./
@@ -9,6 +10,8 @@ services:
           target: pat
     ports:
       - "8080:8080"
+    volumes:
+      - ny_tree_census:/dockeruser/ny_tree_census
     command: /bin/bash -c "\
       code-server \
       --disable-telemetry \
@@ -17,6 +20,7 @@ services:
       --disable-getting-started-override \
       --bind-addr 0.0.0.0:8080 \
       /dockeruser/ny_tree_census"
+
   self-hosted_runner:
     build:
       context: ./
@@ -32,8 +36,14 @@ services:
       --token $(cat /run/secrets/runner_secret_token) && \
       ./run.sh"
 
+
 secrets:
   dev_env_pat:
     file: ./.dev_env_pat
   runner_secret_token:
     file: ./.runner_secret_token
+
+
+volumes:
+  ny_tree_census:
+    name: "ny_tree_census_vol"
