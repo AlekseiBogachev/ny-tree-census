@@ -4711,13 +4711,13 @@ test = ["array-api-strict", "asv", "gmpy2", "hypothesis (>=6.30)", "mpmath", "po
 
 [[package]]
 name = "scmrepo"
-version = "3.3.2"
+version = "3.3.3"
 description = "scmrepo"
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "scmrepo-3.3.2-py3-none-any.whl", hash = "sha256:2933d0b15b1b409c01e7eb2aea79b476215276d26e1eda4b4c9d3fe374047022"},
-    {file = "scmrepo-3.3.2.tar.gz", hash = "sha256:a817334bf005275e7f0f98d768ce21bb5cbfc05676a0d6081372eb927e7c737b"},
+    {file = "scmrepo-3.3.3-py3-none-any.whl", hash = "sha256:11242e4396b899b790bb146a92ad44925560330b2413014c5442f1b00bdb31ee"},
+    {file = "scmrepo-3.3.3.tar.gz", hash = "sha256:9eb592b4aadd51360f1bbe316d055b04278ca909f162023078fe504961b1a1d8"},
 ]
 
 [package.dependencies]
@@ -4733,7 +4733,7 @@ pygtrie = ">=2.3.2"
 tqdm = "*"
 
 [package.extras]
-dev = ["mypy (==1.9.0)", "scmrepo[tests]", "types-certifi", "types-mock", "types-paramiko", "types-tqdm"]
+dev = ["mypy (==1.10.0)", "scmrepo[tests]", "types-certifi", "types-mock", "types-paramiko", "types-tqdm"]
 tests = ["aioresponses (>=0.7,<0.8)", "paramiko (>=3.4.0,<4)", "pytest (>=7,<9)", "pytest-asyncio (>=0.23.2,<1)", "pytest-cov (>=4.1.0)", "pytest-docker (>=1,<4)", "pytest-mock", "pytest-sugar", "pytest-test-utils (>=0.1.0,<0.2)"]
 
 [[package]]

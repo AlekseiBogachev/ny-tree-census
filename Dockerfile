@@ -69,6 +69,21 @@ RUN poetry run pre-commit install --install-hooks --overwrite
 CMD /bin/bash
 
 
+FROM ny_tree_census_base as ny_tree_census_dash
+
+USER root
+COPY . /${UNAME}/ny_tree_census
+RUN chown ${UNAME} -R /${UNAME}/ny_tree_census
+
+USER ${UNAME}
+
+WORKDIR /${UNAME}/ny_tree_census
+
+RUN poetry install
+
+CMD /bin/bash
+
+
 FROM ny_tree_census_base as gh_actions_runner
 
 USER root

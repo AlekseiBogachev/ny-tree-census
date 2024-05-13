@@ -21,6 +21,19 @@ services:
       --bind-addr 0.0.0.0:8080 \
       /dockeruser/ny_tree_census"
 
+  dashboard:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: ny_tree_census_dash
+    ports:
+      - "8050:8050"
+    volumes:
+      - ny_tree_census:/dockeruser/ny_tree_census
+    command: /bin/bash -c "\
+      poetry run python \
+      ./src/dashboards/app.py"
+
   self-hosted_runner:
     build:
       context: ./
