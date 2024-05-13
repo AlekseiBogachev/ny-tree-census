@@ -1,51 +1,62 @@
 """Пробный дашборд-заглушка из примера из документации plotly. Будет заменён."""
 
+from typing import List
+
 from dash import Dash, Input, Output, dcc, html
-from plotly import graph_objects as go
+from plotly import express as px
 
 app = Dash(__name__)
 
 
 app.layout = html.Div(
     [
-        html.H4("Interactive color selection with simple Dash example"),
-        html.P("Select color:"),
-        dcc.Dropdown(
-            id="getting-started-x-dropdown",
-            options=["Gold", "MediumTurquoise", "LightGreen"],
-            value="Gold",
-            clearable=False,
+        html.H1("Interactive scatter plot with Iris dataset"),
+        dcc.Graph(id="scatter-plot"),
+        html.P("Filter by petal width:"),
+        dcc.RangeSlider(
+            id="range-slider",
+            min=0,
+            max=2.5,
+            step=0.1,
+            marks={0: "0", 2.5: "2.5"},
+            value=[0.5, 2],
         ),
-        dcc.Graph(id="getting-started-x-graph"),
     ]
 )
 
 
 @app.callback(
-    Output("getting-started-x-graph", "figure"),
-    Input("getting-started-x-dropdown", "value"),
+    Output("scatter-plot", "figure"),
+    Input("range-slider", "value"),
 )
-def display_color(color: str) -> go.Figure:
-    """Возвращает столбчатую диаграмму цвета color.
+def update_scatter_plot(slider_range: List[float]) -> px.scatter:
+    """Возвращает диаграмму рассеяния.
 
-    Пробный график-заглушка из примера из документации plotly.
-    В будущем будет заменен графиками из исследования.
+    Возвращает диаграмму рассеяния, диапазон значений petal_width выставляется
+    с помощью слайдера под диаграммой.
 
     Parameters
     ----------
-    color : str
-        Цвет столбчатой диаграммы.
+    slider_range : List[float]
+        Диапазон значений petal_width, выставленный с помощью слайдера.
 
     Returns
     -------
-    go.Figure
-        Интерактивный график - объект plotly.graph_object.Figure.
+    px.scatter
+        Диаграмма рассеяния.
     """
-    fig = go.Figure(
-        data=go.Bar(
-            y=[2, 3, 1],
-            marker_color=color,
-        ),
+    df = px.data.iris()
+
+    low, high = slider_range
+    mask = (df["petal_width"] > low) & (df["petal_width"] < high)
+
+    fig = px.scatter(
+        df[mask],
+        x="sepal_width",
+        y="sepal_length",
+        color="species",
+        size="petal_length",
+        hover_data=["petal_width"],
     )
 
     return fig
