@@ -72,7 +72,7 @@ CMD /bin/bash
 FROM ny_tree_census_base as ny_tree_census_dash
 
 USER root
-COPY . /${UNAME}/ny_tree_census
+COPY src/dashboards/ /${UNAME}/ny_tree_census/src/dashboards/
 RUN chown ${UNAME} -R /${UNAME}/ny_tree_census
 
 USER ${UNAME}
