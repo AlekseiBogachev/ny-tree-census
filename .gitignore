@@ -104,7 +104,7 @@ target/
 /catboost_info/
 
 # Self-hosted runner for GitHub Actions
-/gh_actions_runner/.secret_token
+.runner_secret_token
 
 # Загружаемое описание датасета
 /references/ny_tree_census_description.pdf

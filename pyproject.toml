@@ -76,8 +76,10 @@ warn_unused_configs = true
 [[tool.mypy.overrides]]
 module = [
     "catboost",
+    "dash",
     "joblib",
     "missingno",
+    "plotly",
     "sklearn",
     "sklearn.metrics",
     "sklearn.model_selection"
