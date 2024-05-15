@@ -11,7 +11,9 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ny_tree_census:/dockeruser/ny_tree_census
+      - type: volume
+        source: ny_tree_census
+        target: /dockeruser/ny_tree_census
     command: /bin/bash -c "\
       code-server \
       --disable-telemetry \
@@ -25,14 +27,19 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-      target: ny_tree_census_dash
+      target: ny_tree_census_base
     ports:
       - "8050:8050"
     volumes:
-      - ny_tree_census:/dockeruser/ny_tree_census
+      - type: volume
+        source: ny_tree_census
+        target: /dockeruser/ny_tree_census
+        read_only: True
+        volume:
+          nocopy: True
     command: /bin/bash -c "\
-      poetry run python \
-      ./src/dashboards/app.py"
+      poetry install && \
+      poetry run python ./src/dashboards/app.py"
 
   self-hosted_runner:
     build:

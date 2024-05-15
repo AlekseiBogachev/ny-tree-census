@@ -69,21 +69,6 @@ RUN poetry run pre-commit install --install-hooks --overwrite
 CMD /bin/bash
 
 
-FROM ny_tree_census_base as ny_tree_census_dash
-
-USER root
-COPY src/dashboards/ /${UNAME}/ny_tree_census/src/dashboards/
-RUN chown ${UNAME} -R /${UNAME}/ny_tree_census
-
-USER ${UNAME}
-
-WORKDIR /${UNAME}/ny_tree_census
-
-RUN poetry install
-
-CMD /bin/bash
-
-
 FROM ny_tree_census_base as gh_actions_runner
 
 USER root
@@ -95,8 +80,8 @@ RUN echo "d62de2400eeeacd195db91e2ff011bfb646cd5d85545e81d8f78c436183e09a8  acti
 RUN tar xzf ./actions-runner-linux-x64-2.316.1.tar.gz
 RUN ./bin/installdependencies.sh
 
-ARG UNAME=dockeruser
 RUN chown -R $UNAME /$UNAME
+
 USER $UNAME
 
 COPY poetry.loc[k] pyproject.toml ./

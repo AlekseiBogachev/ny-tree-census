@@ -530,12 +530,12 @@ dvc-studio-client==0.20.0 ; python_version >= "3.11" and python_version < "4.0" 
 dvc-task==0.4.0 ; python_version >= "3.11" and python_version < "4.0" \
     --hash=sha256:c0166626af9c0e932ba18194fbc57df38f22860fcc0fbd450dee14ef9615cd3c \
     --hash=sha256:ed047e4bb5031fcf640357ae4638a2a89e34f556560ed9d1fbf6646ed4e8cca6
-dvc==3.50.1 ; python_version >= "3.11" and python_version < "4.0" \
-    --hash=sha256:97c92a530da38ea08f1cfad6ec7ad7ad1abf55887eb243d10b789123131616f9 \
-    --hash=sha256:c272d05d8d093564053132a2f41efbf22a3a0c8c0a67104cb25e3f483770f55c
-dvc[gdrive]==3.50.1 ; python_version >= "3.11" and python_version < "4.0" \
-    --hash=sha256:97c92a530da38ea08f1cfad6ec7ad7ad1abf55887eb243d10b789123131616f9 \
-    --hash=sha256:c272d05d8d093564053132a2f41efbf22a3a0c8c0a67104cb25e3f483770f55c
+dvc==3.50.2 ; python_version >= "3.11" and python_version < "4.0" \
+    --hash=sha256:b8e12d3521391ae839b8f38ea807d6f88699c570806f4bfdf4fff3733f87a1cc \
+    --hash=sha256:fca38ee17c02f4a5450d71a36d4e8b72635b45fdfbb582892695eba9ba5690bc
+dvc[gdrive]==3.50.2 ; python_version >= "3.11" and python_version < "4.0" \
+    --hash=sha256:b8e12d3521391ae839b8f38ea807d6f88699c570806f4bfdf4fff3733f87a1cc \
+    --hash=sha256:fca38ee17c02f4a5450d71a36d4e8b72635b45fdfbb582892695eba9ba5690bc
 entrypoints==0.4 ; python_version >= "3.11" and python_version < "4.0" \
     --hash=sha256:b706eddaa9218a19ebcd67b56818f05bb27589b1ca9e8d797b74affad4ccacd4 \
     --hash=sha256:f174b5ff827504fd3cd97cc3f8649f3693f51538c7e4bdf3ef002c8429d42f9f
