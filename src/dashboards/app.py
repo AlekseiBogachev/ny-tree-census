@@ -1,63 +1,65 @@
 """Пробный дашборд-заглушка из примера из документации plotly. Будет заменён."""
 
-from typing import List
+import json
+import urllib
 
 from dash import Dash, Input, Output, dcc, html
-from plotly import express as px
+from plotly import graph_objects as go
 
 app = Dash(__name__)
 
-
 app.layout = html.Div(
     [
-        html.H1("Interactive scatter plot with Iris dataset"),
-        dcc.Graph(id="scatter-plot"),
-        html.P("Filter by petal width:"),
-        dcc.RangeSlider(
-            id="range-slider",
+        html.H1("Supply chain of the energy production"),
+        dcc.Graph(id="graph"),
+        html.P("Opacity"),
+        dcc.Slider(
+            id="slider",
             min=0,
-            max=2.5,
+            max=1,
+            value=0.5,
             step=0.1,
-            marks={0: "0", 2.5: "2.5"},
-            value=[0.5, 2],
         ),
     ]
 )
 
 
-@app.callback(
-    Output("scatter-plot", "figure"),
-    Input("range-slider", "value"),
-)
-def update_scatter_plot(slider_range: List[float]) -> px.scatter:
-    """Возвращает диаграмму рассеяния.
+@app.callback(Output("graph", "figure"), Input("slider", "value"))
+def display_sankey(opacity: float) -> go.Figure:
+    """Возвращает диаграмму потока (Sankey Diagram).
 
-    Возвращает диаграмму рассеяния, диапазон значений petal_width выставляется
-    с помощью слайдера под диаграммой.
+    Возвращает диаграмму потока (Sankey Diagram, см.
+    https://plotly.com/python/sankey-diagram/). С помощью слайдера выставляется
+    прозрачность линий на диаграмме. Для слайдера выставлено значение
+    по умолчанию 0.5 и шаг 0.1.
 
     Parameters
     ----------
-    slider_range : List[float]
-        Диапазон значений petal_width, выставленный с помощью слайдера.
+    opacity : float
+        Значение прозрачности линий, выставляемое с мощью слайдера на дашборде.
 
     Returns
     -------
-    px.scatter
-        Диаграмма рассеяния.
+    go.Figure
+        Диаграмма потока (Sankey Diagram).
     """
-    df = px.data.iris()
+    url = "https://raw.githubusercontent.com/plotly/plotly.js/master/test/image/mocks/sankey_energy.json"
+    response = urllib.request.urlopen(url)  # type: ignore
+    data = json.loads(response.read())
 
-    low, high = slider_range
-    mask = (df["petal_width"] > low) & (df["petal_width"] < high)
+    node = data["data"][0]["node"]
+    node["color"] = [
+        f"rgba(255, 0, 255, {opacity})"
+        if c == "magenta"
+        else c.replace("0.8", str(opacity))
+        for c in node["color"]
+    ]
 
-    fig = px.scatter(
-        df[mask],
-        x="sepal_width",
-        y="sepal_length",
-        color="species",
-        size="petal_length",
-        hover_data=["petal_width"],
-    )
+    link = data["data"][0]["link"]
+    link["color"] = [node["color"][src] for src in link["source"]]
+
+    fig = go.Figure(go.Sankey(link=link, node=node))
+    fig.update_layout(font_size=10)
 
     return fig
 
