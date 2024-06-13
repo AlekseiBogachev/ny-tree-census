@@ -27,7 +27,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-      target: ny_tree_census_base
+      target: ny_tree_census_packages
     ports:
       - "8050:8050"
     volumes:

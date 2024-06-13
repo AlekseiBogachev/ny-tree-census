@@ -4,9 +4,8 @@ FROM python:${PYTHON_VERSION} as ny_tree_census_base
 ARG UNAME=dockeruser
 ARG UID=1001
 ARG GID=1001
-ARG GITUSER="Aleksei Bogachev"
-ARG GITEMAIL="bogachev.aleksey.m@gmail.com"
-ARG REPO="AlekseiBogachev/ny-tree-census.git"
+
+USER root
 
 RUN groupadd \
     --gid ${GID} \
@@ -22,11 +21,25 @@ RUN useradd \
     --uid ${UID} \
     ${UNAME}
 
+RUN curl -o quarto.deb -L https://github.com/quarto-dev/quarto-cli/releases/download/v1.5.43/quarto-1.5.43-linux-amd64.deb
+RUN dpkg -i quarto.deb
+RUN rm -rf quarto.deb
+
 USER ${UNAME}
 
 RUN curl -sSL https://install.python-poetry.org | python3 -
 ENV PATH="/${UNAME}/.local/bin:/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 RUN poetry config installer.max-workers 10
+
+WORKDIR /${UNAME}/ny_tree_census
+COPY pyproject.toml /${UNAME}/ny_tree_census/
+
+RUN poetry run quarto check
+
+CMD /bin/bash
+
+
+FROM ny_tree_census_base as ny_tree_census_packages
 
 WORKDIR /${UNAME}/ny_tree_census
 COPY poetry.loc[k] pyproject.toml /${UNAME}/ny_tree_census/
@@ -35,13 +48,13 @@ RUN poetry install --no-root
 CMD /bin/bash
 
 
-FROM ny_tree_census_base as ny_tree_census_dev
+FROM ny_tree_census_packages as ny_tree_census_dev
+
+ARG GITUSER="Aleksei Bogachev"
+ARG GITEMAIL="bogachev.aleksey.m@gmail.com"
+ARG REPO="AlekseiBogachev/ny-tree-census.git"
 
 USER root
-
-RUN curl -o quarto.deb -L https://github.com/quarto-dev/quarto-cli/releases/download/v1.5.43/quarto-1.5.43-linux-amd64.deb
-RUN dpkg -i quarto.deb
-RUN rm -rf quarto.deb
 
 RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version=4.23.1
 
@@ -85,12 +98,10 @@ RUN curl -o actions-runner-linux-x64-2.316.1.tar.gz -L https://github.com/action
 RUN echo "d62de2400eeeacd195db91e2ff011bfb646cd5d85545e81d8f78c436183e09a8  actions-runner-linux-x64-2.316.1.tar.gz" | shasum -a 256 -c
 RUN tar xzf ./actions-runner-linux-x64-2.316.1.tar.gz
 RUN ./bin/installdependencies.sh
+RUN rm -rf actions-runner-linux-x64-2.316.1.tar.gz
 
 RUN chown -R $UNAME /$UNAME
 
 USER $UNAME
-
-COPY poetry.loc[k] pyproject.toml ./
-RUN poetry install --no-root
 
 CMD /bin/bash

@@ -8,7 +8,6 @@ BUILDKIT_PROGRESS=plain \
 docker build \
 --tag ny_tree_census_dev \
 --progress=plain \
---no-cache \
 --secret id=pat,src=.dev_env_pat \
 --target ny_tree_census_dev \
 . \
