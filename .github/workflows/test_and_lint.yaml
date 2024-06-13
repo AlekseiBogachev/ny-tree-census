@@ -29,6 +29,11 @@ jobs:
       - name: Poetry check configs
         run: poetry config --list
 
+      - name: Check venvs
+        run: |
+          poetry env list
+          poetry env list --full-path
+
       - name: Check DVC version
         run: |
           echo DVC version: 
