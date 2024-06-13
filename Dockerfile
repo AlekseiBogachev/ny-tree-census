@@ -42,7 +42,6 @@ USER root
 RUN curl -o quarto.deb -L https://github.com/quarto-dev/quarto-cli/releases/download/v1.5.43/quarto-1.5.43-linux-amd64.deb
 RUN dpkg -i quarto.deb
 RUN rm -rf quarto.deb
-RUN quarto check
 
 RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version=4.23.1
 
@@ -54,6 +53,8 @@ RUN chown ${UNAME} -R /${UNAME}/.local/share/code-server/
 RUN chown ${UNAME} -R /${UNAME}/ny_tree_census
 
 USER ${UNAME}
+
+RUN poetry run quarto check
 
 RUN for EXT in $(cat /${UNAME}/ny_tree_census/.code-server/extensions.txt); \
 do code-server --install-extension $EXT; \
