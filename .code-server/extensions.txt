@@ -8,6 +8,7 @@ ms-python.black-formatter@2024.2.0
 ms-python.flake8@2023.10.0
 ms-toolsai.jupyter@2024.3.1
 njpwerner.autodocstring@0.6.1
+quarto.quarto@1.113.0
 redhat.vscode-yaml@1.14.0
 streetsidesoftware.code-spell-checker@3.0.1
 streetsidesoftware.code-spell-checker-british-english@1.4.6
