@@ -78,15 +78,15 @@ COPY --chown=${UNAME} .git/ /${UNAME}/ny_tree_census/.git/
 COPY --chown=${UNAME} .pre-commit-config.yaml /${UNAME}/ny_tree_census/
 RUN poetry run pre-commit install --install-hooks --overwrite
 
-
-RUN git config --global user.name "${GITUSER}" && \
-git config --global user.email "${GITEMAIL}"
-RUN --mount=type=secret,id=pat,uid=${UID} \
-git remote set-url origin https://$(cat /run/secrets/pat)@github.com/${REPO}
-
 COPY --chown=${UNAME} . /${UNAME}/ny_tree_census
 
 RUN poetry install
+
+RUN --mount=type=secret,id=pat,uid=${UID} \
+git remote set-url origin \
+https://$(cat /run/secrets/pat)@github.com/${REPO} && \
+git config --global user.name "${GITUSER}" && \
+git config --global user.email "${GITEMAIL}"
 
 CMD /bin/bash
 
