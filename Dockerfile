@@ -36,6 +36,7 @@ ENV PATH="/${UNAME}/.local/bin:/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/l
 RUN poetry config installer.max-workers 10
 
 COPY --chown=${UNAME} pyproject.toml /${UNAME}/ny_tree_census/
+RUN poetry run quarto install tinytex
 RUN poetry run quarto check
 
 CMD /bin/bash
