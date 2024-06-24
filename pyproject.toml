@@ -7,6 +7,7 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
+numpy = "^1"
 python = "^3.11"
 pandas = "^1"
 matplotlib = "^3.8.3"
