@@ -1,5 +1,5 @@
 ARG PYTHON_VERSION=3.11
-FROM python:${PYTHON_VERSION} as ny_tree_census_base
+FROM python:${PYTHON_VERSION} AS ny_tree_census_base
 
 ARG UNAME=dockeruser
 ARG UID=1001
@@ -42,7 +42,7 @@ RUN poetry run quarto check
 CMD /bin/bash
 
 
-FROM ny_tree_census_base as ny_tree_census_packages
+FROM ny_tree_census_base AS ny_tree_census_packages
 
 USER ${UNAME}
 WORKDIR /${UNAME}/ny_tree_census
@@ -55,7 +55,7 @@ RUN poetry run quarto check
 CMD /bin/bash
 
 
-FROM ny_tree_census_packages as ny_tree_census_dev
+FROM ny_tree_census_packages AS ny_tree_census_dev
 
 ARG GITUSER="Aleksei Bogachev"
 ARG GITEMAIL="bogachev.aleksey.m@gmail.com"
@@ -92,7 +92,7 @@ git config --global user.email "${GITEMAIL}"
 CMD /bin/bash
 
 
-FROM ny_tree_census_base as gh_actions_runner
+FROM ny_tree_census_base AS gh_actions_runner
 
 USER root
 WORKDIR /${UNAME}/ny_tree_census
