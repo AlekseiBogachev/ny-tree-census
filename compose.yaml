@@ -23,7 +23,7 @@ services:
       --bind-addr 0.0.0.0:8080 \
       /dockeruser/ny_tree_census"
 
-  dashboard:
+  plotly_dash:
     build:
       context: ./
       dockerfile: Dockerfile
@@ -56,6 +56,21 @@ services:
       --token $(cat /run/secrets/runner_secret_token) && \
       ./run.sh"
 
+  shiny_server:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: shiny_server
+    ports:
+      - "3838:3838"
+    volumes:
+      - type: volume
+        source: ny_tree_census
+        target: /dockeruser/ny_tree_census
+        read_only: False
+        volume:
+          nocopy: True
+    command: /bin/bash -c "shiny-server"
 
 secrets:
   dev_env_pat:

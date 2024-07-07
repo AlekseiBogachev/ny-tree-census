@@ -39,7 +39,7 @@ COPY --chown=${UNAME} pyproject.toml /${UNAME}/ny_tree_census/
 RUN poetry run quarto install tinytex
 RUN poetry run quarto check
 
-CMD /bin/bash
+CMD ["/bin/bash"]
 
 
 FROM ny_tree_census_base AS ny_tree_census_packages
@@ -52,7 +52,7 @@ RUN poetry install --no-root
 
 RUN poetry run quarto check
 
-CMD /bin/bash
+CMD ["/bin/bash"]
 
 
 FROM ny_tree_census_packages AS ny_tree_census_dev
@@ -89,7 +89,7 @@ https://$(cat /run/secrets/pat)@github.com/${REPO} && \
 git config --global user.name "${GITUSER}" && \
 git config --global user.email "${GITEMAIL}"
 
-CMD /bin/bash
+CMD ["/bin/bash"]
 
 
 FROM ny_tree_census_base AS gh_actions_runner
@@ -97,7 +97,7 @@ FROM ny_tree_census_base AS gh_actions_runner
 USER root
 WORKDIR /${UNAME}/ny_tree_census
 
-RUN apt-get update -y && apt install curl libdigest-sha-perl libssl3 -y
+RUN apt update -y && apt install curl libdigest-sha-perl libssl3 -y
 
 RUN curl \
 -o actions-runner-linux-x64-2.316.1.tar.gz \
@@ -111,4 +111,22 @@ rm -rf actions-runner-linux-x64-2.316.1.tar.gz
 RUN chown -R ${UNAME} /${UNAME}/ny_tree_census
 
 USER ${UNAME}
-CMD /bin/bash
+CMD ["/bin/bash"]
+
+
+FROM ny_tree_census_packages AS shiny_server
+
+USER root
+
+RUN apt update -y && \
+apt install gdebi-core -y && \
+wget https://download3.rstudio.org/ubuntu-18.04/x86_64/shiny-server-1.5.22.1017-amd64.deb && \
+gdebi shiny-server-1.5.22.1017-amd64.deb --non-interactive && \
+rm -rf shiny-server-1.5.22.1017-amd64.deb && \
+chown -R ${UNAME} /var/lib/shiny-server/
+
+COPY shiny-server.conf /etc/shiny-server/shiny-server.conf
+
+USER ${UNAME}
+
+CMD ["/bin/bash", "-c", "shiny-server"]
