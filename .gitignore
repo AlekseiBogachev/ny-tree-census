@@ -108,3 +108,5 @@ target/
 
 # Загружаемое описание датасета
 /references/ny_tree_census_description.pdf
+
+/shiny-server/
