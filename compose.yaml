@@ -23,11 +23,11 @@ services:
       --bind-addr 0.0.0.0:8080 \
       /dockeruser/ny_tree_census"
 
-  dashboard:
+  plotly_dash:
     build:
       context: ./
       dockerfile: Dockerfile
-      target: ny_tree_census_base
+      target: ny_tree_census_packages
     ports:
       - "8050:8050"
     volumes:
@@ -55,6 +55,38 @@ services:
       --url https://github.com/AlekseiBogachev/ny-tree-census \
       --token $(cat /run/secrets/runner_secret_token) && \
       ./run.sh"
+
+  shiny_server:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: shiny_server
+    ports:
+      - "3838:3838"
+    volumes:
+      - type: volume
+        source: ny_tree_census
+        target: /dockeruser/ny_tree_census
+        read_only: False
+        volume:
+          nocopy: True
+    command: /bin/bash -c "shiny-server"
+    
+
+  nginx:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: nginx
+    ports:
+      - "8081:80"
+    volumes:
+      - type: volume
+        source: ny_tree_census
+        target: /dockeruser/ny_tree_census
+        read_only: False
+        volume:
+          nocopy: True
 
 
 secrets:

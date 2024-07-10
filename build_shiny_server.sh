@@ -1,11 +1,13 @@
 #!/bin/bash
+
 echo "" | tee -a ./logs/docker_build.log
-echo "Сборка образа GitHub Actions self-hosted runner" | tee -a ./logs/docker_build.log
+echo "Сборка Shiny Server" | tee -a ./logs/docker_build.log
 echo "" | tee -a ./logs/docker_build.log
 
+BUILDKIT_PROGRESS=plain \
 docker build \
---tag self-hosted_runner \
+--tag shiny_server \
 --progress=plain \
---target gh_actions_runner \
+--target shiny_server \
 . \
 2>&1 | tee -a ./logs/docker_build.log

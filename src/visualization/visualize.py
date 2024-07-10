@@ -529,7 +529,7 @@ def num_vs_num_scatterhexbin(
         Размер всего графика с двумя подграфиками. Значение по умолчанию
         (18, 6).
     """
-    fig, (ax0, ax1) = plt.subplots(
+    fig, (ax0, ax1) = plt.subplots(  # type: ignore
         ncols=2, figsize=figsize, gridspec_kw={"width_ratios": [3, 4]}
     )
 

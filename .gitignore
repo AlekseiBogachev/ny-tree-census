@@ -108,3 +108,7 @@ target/
 
 # Загружаемое описание датасета
 /references/ny_tree_census_description.pdf
+
+# Файлы дашборда и сатитеской веб-страницы, сгенерированные Quarto
+/shiny-server/
+/website/
