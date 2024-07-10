@@ -71,6 +71,23 @@ services:
         volume:
           nocopy: True
     command: /bin/bash -c "shiny-server"
+    
+
+  nginx:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: nginx
+    ports:
+      - "8081:80"
+    volumes:
+      - type: volume
+        source: ny_tree_census
+        target: /dockeruser/ny_tree_census
+        read_only: False
+        volume:
+          nocopy: True
+
 
 secrets:
   dev_env_pat:

@@ -130,3 +130,7 @@ COPY shiny-server.conf /etc/shiny-server/shiny-server.conf
 USER ${UNAME}
 
 CMD ["/bin/bash", "-c", "shiny-server"]
+
+
+FROM nginx:1.26.1 AS nginx
+COPY --chown=root nginx.conf /etc/nginx/nginx.conf
