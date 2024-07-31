@@ -24,7 +24,7 @@ RUN useradd \
 RUN curl \
 -o quarto.deb \
 -L https://github.com/quarto-dev/quarto-cli/releases/download/\
-v1.5.43/quarto-1.5.43-linux-amd64.deb && \
+v1.5.55/quarto-1.5.55-linux-amd64.deb && \
 dpkg -i quarto.deb && \
 rm -rf quarto.deb
 
@@ -119,6 +119,9 @@ FROM ny_tree_census_packages AS shiny_server
 USER root
 
 RUN apt update -y && \
+apt install r-base -y && \
+R -e "install.packages('shiny', repos='https://cran.rstudio.com/')" && \
+R -e "install.packages('rmarkdown', repos='https://cran.rstudio.com/')" && \
 apt install gdebi-core -y && \
 wget https://download3.rstudio.org/ubuntu-18.04/x86_64/shiny-server-1.5.22.1017-amd64.deb && \
 gdebi shiny-server-1.5.22.1017-amd64.deb --non-interactive && \
@@ -128,6 +131,9 @@ chown -R ${UNAME} /var/lib/shiny-server/
 COPY shiny-server.conf /etc/shiny-server/shiny-server.conf
 
 USER ${UNAME}
+
+COPY --chown=${UNAME} poetry.loc[k] pyproject.toml /${UNAME}/ny_tree_census/
+RUN poetry install
 
 CMD ["/bin/bash", "-c", "shiny-server"]
 

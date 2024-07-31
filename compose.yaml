@@ -70,7 +70,7 @@ services:
         read_only: False
         volume:
           nocopy: True
-    command: /bin/bash -c "shiny-server"
+    # command: /bin/bash -c "poetry run shiny run --host 0.0.0.0 --port 80 shiny-server/app.py"
     
 
   nginx:

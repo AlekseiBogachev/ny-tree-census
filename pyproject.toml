@@ -27,8 +27,10 @@ ipywidgets = "^8.1.2"
 kaleido = "0.2.1"
 plotly-geo = "^1.0.0"
 statsmodels = "^0.14.2"
-shiny = "^0.10.2"
+shiny = "^1"
 shinywidgets = "^0.3.2"
+faicons = "^0.2.2"
+ridgeplot = "^0.1.25"
 
 
 [tool.poetry.group.dev.dependencies]
