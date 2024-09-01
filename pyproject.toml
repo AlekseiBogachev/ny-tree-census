@@ -7,6 +7,7 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
+numpy = "^1"
 python = "^3.11"
 pandas = "^1"
 matplotlib = "^3.8.3"
@@ -19,6 +20,17 @@ dvc = {extras = ["gdrive"], version = "^3.47.0"}
 python-dotenv = "^1.0.1"
 kaggle = "^1.6.6"
 missingno = "^0.5.2"
+geopandas = "^0.14.4"
+plotly = "^5.22.0"
+dash = "^2.17.0"
+ipywidgets = "^8.1.2"
+kaleido = "0.2.1"
+plotly-geo = "^1.0.0"
+statsmodels = "^0.14.2"
+shiny = "^1"
+shinywidgets = "^0.3.2"
+faicons = "^0.2.2"
+ridgeplot = "^0.1.25"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -70,8 +82,10 @@ warn_unused_configs = true
 [[tool.mypy.overrides]]
 module = [
     "catboost",
+    "dash",
     "joblib",
     "missingno",
+    "plotly",
     "sklearn",
     "sklearn.metrics",
     "sklearn.model_selection"

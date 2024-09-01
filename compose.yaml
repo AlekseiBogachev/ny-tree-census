@@ -1,0 +1,101 @@
+services:
+
+  code-server:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: ny_tree_census_dev
+      secrets:
+        - source: dev_env_pat
+          target: pat
+    ports:
+      - "8080:8080"
+    volumes:
+      - type: volume
+        source: ny_tree_census
+        target: /dockeruser/ny_tree_census
+    command: /bin/bash -c "\
+      code-server \
+      --disable-telemetry \
+      --disable-update-check \
+      --disable-workspace-trust \
+      --disable-getting-started-override \
+      --bind-addr 0.0.0.0:8080 \
+      /dockeruser/ny_tree_census"
+
+  plotly_dash:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: ny_tree_census_packages
+    ports:
+      - "8050:8050"
+    volumes:
+      - type: volume
+        source: ny_tree_census
+        target: /dockeruser/ny_tree_census
+        read_only: True
+        volume:
+          nocopy: True
+    command: /bin/bash -c "\
+      poetry install && \
+      poetry run python ./src/dashboards/app.py"
+
+  self-hosted_runner:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: gh_actions_runner
+    secrets:
+      - runner_secret_token
+    command: /bin/bash -c "\
+      ./config.sh \
+      --unattended \
+      --labels ubuntu,ds,no-gpu \
+      --url https://github.com/AlekseiBogachev/ny-tree-census \
+      --token $(cat /run/secrets/runner_secret_token) && \
+      ./run.sh"
+
+  shiny_server:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: shiny_server
+    ports:
+      - "3838:3838"
+    volumes:
+      - type: volume
+        source: ny_tree_census
+        target: /dockeruser/ny_tree_census
+        read_only: False
+        volume:
+          nocopy: True
+    # command: /bin/bash -c "poetry run shiny run --host 0.0.0.0 --port 80 shiny-server/app.py"
+    
+
+  nginx:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: nginx
+    ports:
+      - "8081:80"
+    volumes:
+      - type: volume
+        source: ny_tree_census
+        target: /dockeruser/ny_tree_census
+        read_only: False
+        volume:
+          nocopy: True
+
+
+secrets:
+  dev_env_pat:
+    file: ./.dev_env_pat
+  runner_secret_token:
+    file: ./.runner_secret_token
+
+
+volumes:
+  ny_tree_census:
+    name: "ny_tree_census_vol"

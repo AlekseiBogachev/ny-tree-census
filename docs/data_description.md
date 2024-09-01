@@ -45,8 +45,8 @@
 | 37 | state | Все строки меют одно и то же значение этого признака, равное "New York". | Текст |
 | 38 | latitude | Широта | Число |
 | 39 | longitude | Долгота | Число |
-| 40 | x_sp | X coordinate, in state plane. Units are feet. | Число |
-| 41 | y_sp | Y coordinate, in state plane. Units are feet. | Число |
+| 40 | x_sp | Координата X в Государственной плоской системе координат (SPCS), используемой в США. Единица измерения футы. (X coordinate, in state plane. Units are feet.) | Число |
+| 41 | y_sp | Координата Y в Государственной плоской системе координат (SPCS), используемой в США. Единица измерения футы. (Y coordinate, in state plane. Units are feet.) | Число |
 | 42 | council_district | Муниципальный округ. | Число |
 | 43 | census_tract | Переписной участок | Число |
 | 44 | bin |  | Число |

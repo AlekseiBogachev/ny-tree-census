@@ -141,11 +141,12 @@ def plot_hbar(data: pd.DataFrame, column_name: str, **kwargs: Any) -> None:
 
 
 def explore_cat_feature(
-    data: pd.DataFrame, column_name: str, **kwargs: Any
+    data: pd.DataFrame, column_name: str, n_top: int = -1, **kwargs: Any
 ) -> None:
     """Выводит информацию о количестве уникальных занчений признака.
 
-    Функция поочередно вызывает функции count_vals() и plot_hbar() и передаёт
+    Функция сначала печатает количество уникальных значений признака, затем,
+    поочередно вызывает функции count_vals() и plot_hbar() и передаёт
     им соответствующие аргумерны. Сначала, выводится таблица с количеством
     повторений каждого уникального значения признака column_name датафрейма data
     (вызов count_vals()). Затем, строится горизонтальная столбчатая диаграмма
@@ -160,12 +161,27 @@ def explore_cat_feature(
         Датафрейм, содержащий исследуемый признак.
     column_name : str
         Имя признака (столбца датафрейма data).
+    n_top : int
+        n наиболее часто встречающихся значений, которые надо вывести. Если
+        меньше 1, то выводит все. Значение по умолчанию -1.
     **kwargs : Any, optional
         Параметры графика, корректные для метода pd.DataFrame.plot.
     """
-    count_vals(data, column_name)
+    print(f"Количество уникальных знаний: {data[column_name].nunique()}")
+
+    most_common: List = data.loc[:, column_name].unique().tolist()
+    if n_top > 0:
+        most_common = (
+            data.loc[:, column_name].value_counts().head(n_top).index.to_list()
+        )
+
+    selected_data: pd.DataFrame = data.loc[
+        data[column_name].isin(most_common), :
+    ]
+
+    count_vals(selected_data, column_name)
     print()
-    plot_hbar(data, column_name, **kwargs)
+    plot_hbar(selected_data, column_name, **kwargs)
 
     return None
 
@@ -377,6 +393,13 @@ def explore_cat_vs_cat(
     **kwargs :  Any, optional
         Параметры графика, корректные для функции cat_vs_cat_scatter().
         Позволяет переопределить аналогичные параметры, заданные по умолчанию.
+        Если в **kwargs передать аргумент cmap, то тепловая карта будет
+        применена как к цвету текста сводной таблицы, так и к графику после
+        неё.
+        Если в **kwargs передать аргумент norm, то соответствующая нормализация
+        цветов будет применена как к цвету текста сводной таблицы, так и к
+        графику после неё. См. matplotlib.colors.LogNorm . Таким образом, текст
+        сводной таблицы будет иметь те же цвета, что и элементы графика.
     """
     plot_params: Dict[str, Any] = {
         "title": title,
@@ -386,9 +409,17 @@ def explore_cat_vs_cat(
 
     print(plot_params["title"])
 
+    crosstab: pd.DataFrame = pd.crosstab(data[x], data[y])
+
+    gmap: Union[None, np.ndarray] = None
+    if plot_params.get("norm") is not None:
+        gmap = plot_params["norm"](crosstab)
+
     display(
-        pd.crosstab(data[x], data[y]).style.text_gradient(
-            cmap=plot_params["cmap"], axis=None
+        crosstab.style.text_gradient(
+            cmap=plot_params["cmap"],
+            axis=None,
+            gmap=gmap,
         )
     )
 
@@ -498,7 +529,7 @@ def num_vs_num_scatterhexbin(
         Размер всего графика с двумя подграфиками. Значение по умолчанию
         (18, 6).
     """
-    fig, (ax0, ax1) = plt.subplots(
+    fig, (ax0, ax1) = plt.subplots(  # type: ignore
         ncols=2, figsize=figsize, gridspec_kw={"width_ratios": [3, 4]}
     )
 

@@ -1,2 +1,3 @@
-# ny_tree_census_prj_dev token
+.env
+.runner_secret_token
 .dev_env_pat

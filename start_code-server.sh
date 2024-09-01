@@ -1,6 +1,8 @@
-
 #!/bin/bash
-./build.sh
+
+echo ""
+echo "Создание контейнера и запуск code-server"
+echo ""
 
 docker run \
 --detach \
@@ -9,6 +11,10 @@ docker run \
 -p 127.0.0.1:8080:8080 \
 ny_tree_census_dev \
 code-server \
+--disable-telemetry \
+--disable-update-check \
+--disable-workspace-trust \
+--disable-getting-started-override \
 --bind-addr 0.0.0.0:8080 \
 /dockeruser/ny_tree_census
 
@@ -18,5 +24,3 @@ echo "code-server is running"
 echo "code-server parameters:"
 docker exec -it ny_tree_census_code_server \
 cat /dockeruser/.config/code-server/config.yaml
-
-docker attach ny_tree_census_code_server
