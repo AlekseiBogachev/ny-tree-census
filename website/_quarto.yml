@@ -1,0 +1,29 @@
+project:
+  type: website
+
+author: Aleksei Bogachev
+date: 'September 2, 2024'
+
+website:
+  title: "NY Tree Census EDA"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - about.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    # toc-depth: 2
+    code-fold: true
+    code-summary: Show the code
+    code-line-numbers: true
+execute:
+  enabled: true
+jupyter: python3
+
+
+
