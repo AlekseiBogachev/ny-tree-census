@@ -9,8 +9,11 @@ website:
   navbar:
     left:
       - href: index.qmd
-        text: Home
-      - about.qmd
+        text: В начало
+      - href: eda.qmd
+        text: Исследовательский анализ данных
+      - href: about.qmd
+        text: О сайте
 
 format:
   html:
