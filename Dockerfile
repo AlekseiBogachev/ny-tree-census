@@ -139,4 +139,13 @@ CMD ["/bin/bash", "-c", "shiny-server"]
 
 
 FROM nginx:1.26.1 AS nginx
+RUN apt-get update \ 
+  && apt-get -y install wget ca-certificates \
+  && wget "https://github.com/quarto-dev/quarto-cli/releases/download/v1.0.38/quarto-1.0.38-linux-amd64.deb" -O quarto.deb \
+  && dpkg -i quarto.deb \
+  && rm quarto.deb \
+  && apt-get autoremove -y \
+  && apt-get autoclean -y \
+  && rm -rf /var/lib/apt/lists/* \
+  && rm -rf /tmp/*
 COPY --chown=root nginx.conf /etc/nginx/nginx.conf
