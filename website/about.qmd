@@ -2,4 +2,22 @@
 title: "About"
 ---
 
-About this site
+Сайт содержит результаты исследовательского анализа датасета
+2015 Street Tree Census - Tree Data
+(https://data.cityofnewyork.us/Environment/2015-Street-Tree-Census-Tree-Data/uvpi-gqnh/about_data)
+и визуализацию геоданных.
+
+Проект создан для
+[домашнего задания](https://ods.ai/tracks/mlops3-course-spring-2024/competitions/mlops24-hw-4)
+курса
+[MLOps и production в DS исследованиях 3.0](https://ods.ai/tracks/mlops3-course-spring-2024).
+
+::: {.callout-tip}
+## Репозиторий проекта
+Подробнее о проекте можно узнать в
+[репозитории проекта на GitHub](https://github.com/AlekseiBogachev/ny-tree-census)
+:::
+
+::: {.callout-caution}
+Проект и документация в стадии разработки.
+:::
