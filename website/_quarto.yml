@@ -4,6 +4,8 @@ project:
 author: Aleksei Bogachev
 date: 'September 3, 2024'
 
+from: markdown+emoji
+
 website:
   title: "NY Tree Census EDA"
   navbar:
